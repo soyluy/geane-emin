@@ -1,0 +1,19 @@
+{
+  "name": "image-metrics-tools",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "p-limit": "^4.0.0",
+    "probe-image-size": "^7.2.3",
+    "tsx": "^4.20.5"
+  },
+  "scripts": {
+    "build:image-metrics": "tsx build-image-metrics.ts --exportName=fakeProducts --fakeDataPath=../../apps/mobile/src/app/data/ProductData/InApprovalProcess --outProducts=../../apps/mobile/src/app/data/ProductData/generated/WithAr.ts --outMetrics=../../apps/mobile/src/app/data/ProductData/generated/image-metrics.json"
+  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

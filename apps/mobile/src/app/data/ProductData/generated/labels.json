@@ -1,0 +1,404 @@
+{
+  "6": {
+    "tag": 5
+  },
+  "7": {
+    "tag": 1
+  },
+  "8": {
+    "tag": 2
+  },
+  "9": {
+    "tag": 3
+  },
+  "10": {
+    "tag": 3
+  },
+  "201": {
+    "tag": 3
+  },
+  "202": {
+    "tag": 4
+  },
+  "203": {
+    "tag": 5
+  },
+  "204": {
+    "tag": 1
+  },
+  "205": {
+    "tag": 2
+  },
+  "206": {
+    "tag": 3
+  },
+  "207": {
+    "tag": 4
+  },
+  "208": {
+    "tag": 5
+  },
+  "209": {
+    "tag": 1
+  },
+  "210": {
+    "tag": 3
+  },
+  "901": {
+    "tag": 5
+  },
+  "902": {
+    "tag": 1
+  },
+  "903": {
+    "tag": 2
+  },
+  "904": {
+    "tag": 3
+  },
+  "905": {
+    "tag": 4
+  },
+  "906": {
+    "tag": 5
+  },
+  "907": {
+    "tag": 1
+  },
+  "A101": {
+    "tag": 2
+  },
+  "A102": {
+    "tag": 3
+  },
+  "A103": {
+    "tag": 4
+  },
+  "A104": {
+    "tag": 5
+  },
+  "A105": {
+    "tag": 1
+  },
+  "E201": {
+    "tag": 2
+  },
+  "E202": {
+    "tag": 3
+  },
+  "E203": {
+    "tag": 4
+  },
+  "sia_bahar_001": {
+    "tag": 4
+  },
+  "sia_bahar_002": {
+    "tag": 5
+  },
+  "sia_bahar_003": {
+    "tag": 1
+  },
+  "sia_bahar_004": {
+    "tag": 2
+  },
+  "sia_bahar_005": {
+    "tag": 3
+  },
+  "sia_bahar_101": {
+    "tag": 5
+  },
+  "sia_bahar_102": {
+    "tag": 1
+  },
+  "sia_bahar_103": {
+    "tag": 2
+  },
+  "sia_bahar_104": {
+    "tag": 3
+  },
+  "sia_bahar_105": {
+    "tag": 4
+  },
+  "sia_bahar3_001": {
+    "tag": 5
+  },
+  "sia_bahar3_002": {
+    "tag": 1
+  },
+  "sia_bahar3_003": {
+    "tag": 2
+  },
+  "sia_bahar3_004": {
+    "tag": 3
+  },
+  "sia_bahar3_005": {
+    "tag": 4
+  },
+  "sia_bahar3_006": {
+    "tag": 5
+  },
+  "sia_bahar3_007": {
+    "tag": 1
+  },
+  "sia_bahar3_008": {
+    "tag": 2
+  },
+  "sia_bahar3_009": {
+    "tag": 3
+  },
+  "sia_bahar3_010": {
+    "tag": 5
+  },
+  "sia_bahar4_001": {
+    "tag": 1
+  },
+  "sia_bahar4_002": {
+    "tag": 2
+  },
+  "sia_bahar4_003": {
+    "tag": 3
+  },
+  "sia_bahar4_004": {
+    "tag": 4
+  },
+  "sia_bahar4_005": {
+    "tag": 5
+  },
+  "sia_bahar4_006": {
+    "tag": 1
+  },
+  "sia_bahar4_007": {
+    "tag": 2
+  },
+  "sia_bahar4_008": {
+    "tag": 3
+  },
+  "sia_bahar4_009": {
+    "tag": 4
+  },
+  "sia_bahar4_010": {
+    "tag": 1
+  },
+  "clan_kadin_001": {
+    "tag": 3
+  },
+  "clan_kadin_002": {
+    "tag": 4
+  },
+  "clan_kadin_003": {
+    "tag": 5
+  },
+  "clan_kadin_004": {
+    "tag": 1
+  },
+  "clan_kadin_005": {
+    "tag": 2
+  },
+  "clan_kadin_006": {
+    "tag": 3
+  },
+  "clan_kadin_007": {
+    "tag": 4
+  },
+  "clan_kadin_008": {
+    "tag": 5
+  },
+  "clan_kadin_009": {
+    "tag": 1
+  },
+  "clan_kadin_010": {
+    "tag": 3
+  },
+  "clan_kadin_011": {
+    "tag": 4
+  },
+  "clan_kadin_012": {
+    "tag": 5
+  },
+  "clan_kadin_013": {
+    "tag": 1
+  },
+  "clan_kadin_014": {
+    "tag": 2
+  },
+  "clan_kadin_015": {
+    "tag": 3
+  },
+  "clan_kadin_016": {
+    "tag": 4
+  },
+  "clan_kadin_017": {
+    "tag": 5
+  },
+  "clan_kadin_018": {
+    "tag": 1
+  },
+  "clan_kadin_019": {
+    "tag": 2
+  },
+  "clan_kadin_020": {
+    "tag": 4
+  },
+  "clan_kadin_021": {
+    "tag": 5
+  },
+  "clan_kadin_022": {
+    "tag": 1
+  },
+  "clan_kadin_023": {
+    "tag": 2
+  },
+  "clan_kadin_024": {
+    "tag": 3
+  },
+  "clan_kadin_025": {
+    "tag": 4
+  },
+  "clan_kadin_026": {
+    "tag": 5
+  },
+  "clan_kadin_027": {
+    "tag": 1
+  },
+  "clan_kadin_028": {
+    "tag": 2
+  },
+  "clan_kadin_029": {
+    "tag": 3
+  },
+  "clan_kadin_030": {
+    "tag": 5
+  },
+  "clan_kadin_031": {
+    "tag": 1
+  },
+  "clan_kadin_032": {
+    "tag": 2
+  },
+  "clan_kadin_033": {
+    "tag": 3
+  },
+  "clan_kadin_034": {
+    "tag": 4
+  },
+  "clan_kadin_035": {
+    "tag": 5
+  },
+  "clan_kadin_036": {
+    "tag": 1
+  },
+  "clan_kadin_037": {
+    "tag": 2
+  },
+  "clan_kadin_038": {
+    "tag": 3
+  },
+  "clan_kadin_039": {
+    "tag": 4
+  },
+  "clan_kadin_040": {
+    "tag": 1
+  },
+  "clan_kadin_041": {
+    "tag": 2
+  },
+  "clan_kadin_042": {
+    "tag": 3
+  },
+  "clan_kadin_043": {
+    "tag": 4
+  },
+  "clan_kadin_044": {
+    "tag": 5
+  },
+  "clan_kadin_045": {
+    "tag": 1
+  },
+  "clan_kadin_046": {
+    "tag": 2
+  },
+  "clan_kadin_047": {
+    "tag": 3
+  },
+  "clan_kadin_048": {
+    "tag": 4
+  },
+  "clan_kadin_049": {
+    "tag": 5
+  },
+  "clan_kadin_050": {
+    "tag": 2
+  },
+  "clan_kadin_151": {
+    "tag": 4
+  },
+  "clan_kadin_152": {
+    "tag": 5
+  },
+  "clan_kadin_153": {
+    "tag": 1
+  },
+  "clan_kadin_154": {
+    "tag": 2
+  },
+  "clan_kadin_155": {
+    "tag": 3
+  },
+  "clan_kadin_201": {
+    "tag": 5
+  },
+  "clan_kadin_202": {
+    "tag": 1
+  },
+  "clan_kadin_203": {
+    "tag": 2
+  },
+  "clan_kadin_204": {
+    "tag": 3
+  },
+  "clan_kadin_205": {
+    "tag": 4
+  },
+  "clan_kadin_206": {
+    "tag": 5
+  },
+  "clan_kadin_207": {
+    "tag": 1
+  },
+  "clan_kadin_208": {
+    "tag": 2
+  },
+  "clan_kadin_209": {
+    "tag": 3
+  },
+  "clan_kadin_210": {
+    "tag": 5
+  },
+  "clan_kadin_211": {
+    "tag": 1
+  },
+  "clan_kadin_212": {
+    "tag": 2
+  },
+  "clan_kadin_213": {
+    "tag": 3
+  },
+  "clan_kadin_214": {
+    "tag": 4
+  },
+  "clan_kadin_215": {
+    "tag": 5
+  },
+  "clan_kadin_216": {
+    "tag": 1
+  },
+  "clan_kadin_217": {
+    "tag": 2
+  },
+  "clan_kadin_218": {
+    "tag": 3
+  },
+  "clan_kadin_219": {
+    "tag": 4
+  }
+}

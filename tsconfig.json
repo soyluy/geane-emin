@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/mobile"
+    },
+    {
+      "path": "./apps/web"
+    },
+    {
+      "path": "./apps/backend/users-service-e2e"
+    },
+    {
+      "path": "./apps/backend/users-service"
+    },
+    {
+      "path": "./libs/shared-types"
+    },
+    {
+      "path": ".//libs/shared-persistence"
+    },
+    {
+      "path": "./libs/middleware"
+    }
+  ]
+}

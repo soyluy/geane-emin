@@ -1,0 +1,11 @@
+{
+  "name": "ready-builder",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "tsx": "^4.0.0"
+  },
+  "scripts": {
+    "build:ready": "tsx ready-builder.ts --withArPath=../../apps/mobile/src/app/data/ProductData/generated/WithAr --labelsPath=../../apps/mobile/src/app/data/ProductData/generated/labels.json --metricsPath=../../apps/mobile/src/app/data/ProductData/generated/image-metrics.json --outReady=../../apps/mobile/src/app/data/ProductData/ready/Ready.ts --exportName=productsWithAr"
+  }
+}
