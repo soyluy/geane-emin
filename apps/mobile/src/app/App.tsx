@@ -7,6 +7,7 @@ import {
   Dimensions,
   StatusBar,
   Platform,
+  Text,
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -25,6 +26,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './navigation/AppNavigator';
 import { CartVisibilityProvider } from './navigation/CartVisibilityContext';
 import { NotificationVisibilityProvider } from './navigation/NotificationVisibilityContext';
+import { UserMenuVisibilityProvider } from './navigation/UserMenuVisibilityContext';
 
 import LoginContent from './components/LoginContent';
 import CreateAccountScreen from './screens/CreateAccountScreen';
@@ -48,6 +50,39 @@ function MainApp() {
   const [showCreate, setShowCreate] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // ⬇️ NAVIGATION BAR SETUP - DOĞRU TIMING
+  useEffect(() => {
+    if (Platform.OS !== 'android' || !isLoggedIn) return;
+    
+    const setupNavigationBar = async () => {
+      try {
+        await NavigationBar.setBackgroundColorAsync('rgba(255, 255, 255, 0.06)');
+        await NavigationBar.setButtonStyleAsync('dark');
+        
+        try {
+          await NavigationBar.setBehaviorAsync('overlay-swipe');
+        } catch {
+          await NavigationBar.setBehaviorAsync('inset-swipe');
+        }
+        
+        await NavigationBar.setVisibilityAsync('visible');
+        
+        if (typeof NavigationBar.setPositionAsync === 'function') {
+          await NavigationBar.setPositionAsync('absolute');
+        }
+        
+        console.log('✅ Navigation Bar: Ana uygulama yüklendikten sonra şeffaflık uygulandı');
+      } catch (error) {
+        console.log('❌ Navigation Bar error:', String(error));
+      }
+    };
+    
+    // Ana uygulama yüklendikten sonra delay ile uygula
+    const timer = setTimeout(setupNavigationBar, 300);
+    
+    return () => clearTimeout(timer);
+  }, [isLoggedIn]); // isLoggedIn değiştiğinde çalışır
 
   const handleLoginContent = (type: string) => {
     switch (type) {
@@ -89,9 +124,13 @@ function MainApp() {
     return (
       <CartVisibilityProvider>
         <NotificationVisibilityProvider>
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
+          <UserMenuVisibilityProvider>
+            <View style={{ flex: 1 }}>
+              <NavigationContainer>
+                <AppNavigator />
+              </NavigationContainer>
+            </View>
+          </UserMenuVisibilityProvider>
         </NotificationVisibilityProvider>
       </CartVisibilityProvider>
     );
@@ -99,7 +138,7 @@ function MainApp() {
 
   return (
     <View style={styles.root}>
-      <StatusBar hidden />
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
       <Video
         source={require('../../assets/videos/intro.mp4')}
@@ -150,23 +189,6 @@ function MainApp() {
 }
 
 export default function App() {
-  // ⬇️ Android Navigation Bar: TEK MERKEZ
-  useEffect(() => {
-    if (Platform.OS !== 'android') return;
-    const applyNavBar = async () => {
-      try {
-        // Yarı-şeffaf beyaz (AA RR GG BB) → %70 opak: B3
-        await NavigationBar.setBackgroundColorAsync('rgba(255, 255, 255, 0.7)'); // '#B3000000'
-        await NavigationBar.setButtonStyleAsync('dark');       // koyu ikonlar
-        await NavigationBar.setBehaviorAsync('overlay-swipe'); // içerik barın altından aksın
-        await NavigationBar.setVisibilityAsync('visible');     // bar görünür
-      } catch (e) {
-        console.log('NavBar setup error:', e);
-      }
-    };
-    applyNavBar();
-  }, []);
-
   return (
     <SafeAreaProvider>
       <Host>

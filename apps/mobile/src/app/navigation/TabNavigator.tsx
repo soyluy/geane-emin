@@ -4,10 +4,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Image, StyleSheet, Dimensions, Pressable } from 'react-native';
 import { useCartVisibility } from './CartVisibilityContext';
 import { useNotificationVisibility } from './NotificationVisibilityContext';
+import { useUserMenuVisibility } from './UserMenuVisibilityContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import MainScreen from '../screens/MainScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import SavedScreen from '../screens/SavedScreen';
+import UserMenu from '../components/ui/UserMenu';
 
 // Pasif ikonlar
 import HomeIcon from '../../../assets/icons/nav/home.svg';
@@ -44,6 +47,10 @@ const Tab = createBottomTabNavigator();
 export default function TabNavigator() {
   const { cartVisible } = useCartVisibility();
   const { notificationVisible } = useNotificationVisibility();
+  const { userMenuVisible, setUserMenuVisible } = useUserMenuVisibility();
+  
+  const [activePanel, setActivePanel] = React.useState<string | null>(null);
+  const insets = useSafeAreaInsets();
 
   const TAB_H = useMemo(() => TAB_H_COMPUTED, []);
   const ICON_H = useMemo(
@@ -69,20 +76,21 @@ export default function TabNavigator() {
   );
 
   return (
+    <>
     <Tab.Navigator
       sceneContainerStyle={{ backgroundColor: 'transparent' }}
       screenOptions={({ route }) => ({
         safeAreaInsets: { bottom: 0, top: 0 },
 
         tabBarStyle:
-          cartVisible || notificationVisible
+          cartVisible || notificationVisible || userMenuVisible
             ? { display: 'none' }
             : {
                 position: 'absolute',
                 left: 0,
                 right: 0,
                 bottom: 0,
-                height: TAB_H,
+                height: TAB_H + insets.bottom, // ✅ Navigation bar için bottom inset eklendi
                 backgroundColor: 'rgba(255,255,255,0.95)',
                 borderTopWidth: 0,
                 borderTopColor: 'transparent',
@@ -91,7 +99,7 @@ export default function TabNavigator() {
                 // ↩︎ Butonlar arası boşluk/kenar pedleri: ESKİ HALİ
                 paddingHorizontal: 24,
                 paddingTop: 0,
-                paddingBottom: 0,
+                paddingBottom: insets.bottom, // ✅ Alt boşluk navigation bar için
               },
 
         headerShown: false,
@@ -153,6 +161,26 @@ export default function TabNavigator() {
       <Tab.Screen name="Explore" component={ExploreScreen} />
       <Tab.Screen name="Saved" component={SavedScreen} />
     </Tab.Navigator>
+    
+    {/* GLOBAL USERMENU - Tüm ekranlar için ortak */}
+    <UserMenu
+      visible={userMenuVisible}
+      onClose={() => setUserMenuVisible(false)}
+      onNavigateToSellerForm={() => {
+        setUserMenuVisible(false);
+        console.log('Satıcı Başvurusuna yönlendirildi');
+      }}
+      onSelectPanel={setActivePanel}
+      selectedPanel={activePanel}
+      setSelectedPanel={setActivePanel}
+      onNavigateToProfile={() => {
+        setUserMenuVisible(false);
+        console.log('Profile navigated');
+      }}
+      avatarUri={null}
+      displayName="Kullanıcı"
+    />
+    </>
   );
 }
 

@@ -1,13 +1,13 @@
 // File: src/app/components/ui/TopBox.tsx
 import React from 'react';
 import {
-  SafeAreaView,
   Text,
   TouchableOpacity,
   View,
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import MenuIcon from '../../../../assets/icons/topbox-menu-icon.svg';
 import NotificationIcon from '../../../../assets/icons/nav/notification.svg';
@@ -39,7 +39,7 @@ export default function TopBox({
 
   return (
     <View style={StyleSheet.absoluteFillObject} pointerEvents="box-none">
-      <SafeAreaView style={[styles.container, { height: HEIGHT, paddingHorizontal: H_PADDING }]}>
+      <SafeAreaView style={[styles.container, { paddingHorizontal: H_PADDING, paddingTop: 8, paddingBottom: 8 }]} edges={['top']}>
         {/* Sol: Başlık */}
         <Text style={styles.title}>{title}</Text>
 
@@ -91,7 +91,7 @@ export default function TopBox({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent', // ✅ ŞEFFAF YAPILDI
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(0,0,0,0.2)',
     flexDirection: 'row',

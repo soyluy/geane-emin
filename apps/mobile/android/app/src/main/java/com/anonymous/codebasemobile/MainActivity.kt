@@ -2,6 +2,7 @@ package com.anonymous.codebasemobile
 
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
@@ -17,6 +18,31 @@ class MainActivity : ReactActivity() {
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
     super.onCreate(null)
+    
+    // ✅ STATUS BAR VE NAVIGATION BAR ŞEFFAFLIK AYARLARI
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      window.statusBarColor = android.graphics.Color.TRANSPARENT
+      window.navigationBarColor = android.graphics.Color.TRANSPARENT
+      
+      window.decorView.systemUiVisibility = (
+        android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+        android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+        android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+      )
+      
+      // API 27+ için navigation bar light mode
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
+          android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+      }
+      
+      // API 28+ için display cutout desteği
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        val layoutParams = window.attributes
+        layoutParams.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.attributes = layoutParams
+      }
+    }
   }
 
   /**

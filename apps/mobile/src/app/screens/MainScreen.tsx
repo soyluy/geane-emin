@@ -1,11 +1,12 @@
 // src/app/screens/MainScreen.tsx
 import React, { useRef, useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Animated, Platform } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native'; // ⬅️ useFocusEffect eklendi
-import * as NavigationBar from 'expo-navigation-bar'; // ⬅️ nav bar kontrolü
+import { View, StyleSheet, Dimensions, Animated, Platform, StatusBar } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { useCartVisibility } from '../navigation/CartVisibilityContext';
 import { useNotificationVisibility } from '../navigation/NotificationVisibilityContext';
+import { useUserMenuVisibility } from '../navigation/UserMenuVisibilityContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import TopBox from '../components/ui/TopBox';
 import LikedSectionContainer, { LIKED_SECTION_HEIGHT } from '../components/ui/LikedSectionContainer';
@@ -13,7 +14,6 @@ import FilterBar, { FILTERBAR_HEIGHT } from '../components/ui/FilterBar';
 import ProductArea from '../components/ui/ProductArea';
 import CategoryArea from '../components/ui/CategoryArea';
 
-import UserMenu from '../components/ui/UserMenu';
 import CartPanel from '../components/ui/CartPanel';
 import NotificationPanel from '../components/ui/NotificationPanel';
 
@@ -27,8 +27,9 @@ const EXTRA_SCROLL_HEIGHT = SCREEN_H * 0.2;
 export default function MainScreen() {
   const { cartVisible, setCartVisible } = useCartVisibility();
   const { notificationVisible, setNotificationVisible } = useNotificationVisibility();
+  const { userMenuVisible, setUserMenuVisible } = useUserMenuVisibility();
   const navigation = useNavigation();
-  const [menuVisible, setMenuVisible] = useState(false);
+  const insets = useSafeAreaInsets();
   const [activePanel, setActivePanel] = useState<string | null>(null);
 
   const translateYAnim = useRef(new Animated.Value(0)).current;
@@ -37,27 +38,9 @@ export default function MainScreen() {
   const scrollRef = useRef<Animated.ScrollView>(null);
 
   const areas = useHomeProductAreas();
-
-  // ⬇️ EKRAN ODAKLANDIĞINDA nav bar'ı kesin olarak şeffaf/overlay yap
-  useFocusEffect(
-    React.useCallback(() => {
-      if (Platform.OS !== 'android') return;
-      const apply = async () => {
-        try {
-          // İstersen opaklık: 0.0–1.0 (örn: 0.7). Tam şeffaf istiyorsan 0.0 yaz.
-          await NavigationBar.setBackgroundColorAsync('rgba(255,255,255,0.0)');
-          await NavigationBar.setButtonStyleAsync('dark');
-          await NavigationBar.setBehaviorAsync('overlay-swipe');
-          await NavigationBar.setVisibilityAsync('visible');
-        } catch (e) {
-          console.log('NavBar setup error (MainScreen):', e);
-        }
-      };
-      apply();
-      // geri dönüşte özel bir şey yapmaya gerek yok
-      return () => {};
-    }, [])
-  );
+  
+  // Debug: areas değerini kontrol et
+  console.log('MainScreen areas:', areas);
 
   const handleScrollToProductArea = () => {
     const y = TOPBOX_HEIGHT + LIKED_SECTION_HEIGHT + FILTERBAR_HEIGHT;
@@ -82,11 +65,16 @@ export default function MainScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar 
+        translucent 
+        backgroundColor="transparent" 
+        barStyle="dark-content" 
+      />
       <View style={styles.fullscreen}>
         <Animated.View style={[styles.topBoxWrapper, { transform: [{ translateY: translateYAnim }] }]}>
           <TopBox
             title="Ana Sayfa"
-            onMenuPress={() => setMenuVisible(true)}
+            onMenuPress={() => setUserMenuVisible(true)}
             onCartPress={() => setCartVisible(true)}
             onNotificationPress={() => setNotificationVisible(true)}
           />
@@ -95,7 +83,10 @@ export default function MainScreen() {
         <Animated.ScrollView
           ref={scrollRef}
           style={styles.container}
-          contentContainerStyle={{ paddingTop: TOPBOX_HEIGHT }}
+          contentContainerStyle={{ 
+            paddingTop: TOPBOX_HEIGHT,
+            paddingBottom: EXTRA_SCROLL_HEIGHT + 100 // ✅ Navigation bar için ek boşluk
+          }}
           scrollEventThrottle={16}
           onScroll={onScroll}
         >
@@ -115,27 +106,15 @@ export default function MainScreen() {
             <CategoryArea title="Kategoriler" items={HOME_CATEGORIES} />
           </View>
 
-          {areas.map(({ key, title, items }) => (
+          {Array.isArray(areas) && areas.length > 0 && areas.map(({ key, title, items }) => (
             <View style={styles.section} key={key}>
-              <ProductArea title={title} items={items} />
+              <ProductArea title={title} items={items || []} />
             </View>
           ))}
 
           <View style={{ height: EXTRA_SCROLL_HEIGHT }} />
         </Animated.ScrollView>
 
-        <UserMenu
-          visible={menuVisible}
-          onClose={() => setMenuVisible(false)}
-          onNavigateToSellerForm={() => {
-            setMenuVisible(false);
-            // @ts-ignore
-            navigation.navigate('SellerStepOne');
-          }}
-          onSelectPanel={(panelName) => setActivePanel(panelName)}
-          selectedPanel={activePanel}
-          setSelectedPanel={setActivePanel}
-        />
       </View>
 
       <CartPanel visible={cartVisible} onClose={() => setCartVisible(false)} />

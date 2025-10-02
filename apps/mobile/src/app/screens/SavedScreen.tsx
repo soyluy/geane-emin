@@ -145,7 +145,7 @@ export default function SavedScreen() {
       )}
       <View style={{ flex: 1 }}>
         <View style={styles.fullscreen}>
-          <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+          <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
           <Animated.View
             style={[

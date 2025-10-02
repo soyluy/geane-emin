@@ -82,7 +82,7 @@ const RegistrationPanel: React.FC<Props> = ({
       showSub.remove();
       hideSub.remove();
     };
-  }, []); // eslint-disable-line
+  }, []);  
 
   useEffect(() => {
     if (!isPwFocused || keyboardH === 0) {
@@ -316,7 +316,6 @@ const RegistrationPanel: React.FC<Props> = ({
             advanceFrom('username');            // geçerli → sıradaki eksik
           }}
           // Fokus yöntemleri (biri tutmazsa diğeri)
-          ref={usernameRef}
           inputRef={usernameRef}
           autoFocus={usernameAutoFocus}
           returnKeyType="next"
@@ -361,7 +360,6 @@ const RegistrationPanel: React.FC<Props> = ({
             if (!completion.username)      focusOrOpen('username');
             else if (!completion.dob)      openDobModal();
           }}
-          ref={passwordRef}
           inputRef={passwordRef}
           autoFocus={passwordAutoFocus}
           returnKeyType="done"

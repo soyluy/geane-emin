@@ -12,6 +12,9 @@ export const CartVisibilityContext = createContext<CartContextType>({
 
 export const CartVisibilityProvider = ({ children }: { children: React.ReactNode }) => {
   const [cartVisible, setCartVisible] = useState(false);
+  
+  // Guard: children null ise null döndür
+  if (!children) return null;
 
   return (
     <CartVisibilityContext.Provider value={{ cartVisible, setCartVisible }}>

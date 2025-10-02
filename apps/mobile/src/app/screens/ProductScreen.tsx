@@ -26,10 +26,14 @@ export default function ProductScreen() {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
 
   return (
-    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <StatusBar translucent backgroundColor="transparent" />
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent} 
+        showsVerticalScrollIndicator={false}
+        style={{ flex: 1 }}
+      >
         <View onLayout={e => setImageHeight(e.nativeEvent.layout.height)}>
           <ProductImageCarousel imageUris={images} price={price} />
         </View>
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: 120, // ✅ Navigation bar için ekstra boşluk (MainScreen gibi)
     backgroundColor: '#fff',
   },
   backButtonWrapper: {

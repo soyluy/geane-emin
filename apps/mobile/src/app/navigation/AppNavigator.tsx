@@ -8,7 +8,7 @@ import CollectionScreen from '../screens/CollectionScreen';
 import CurationScreen from '../screens/CurationScreen';
 
 export type AppStackParamList = {
-  Main: undefined;
+  Tabs: undefined;
   SellerStepOne: undefined;
   Product: {
     Product: { images: string[]; price: string };
@@ -27,11 +27,23 @@ export default function AppNavigator() {
   return (
     <Stack.Navigator
       initialRouteName="Tabs"
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ 
+        headerShown: false,
+        animation: 'slide_from_right',
+        statusBarTranslucent: true,
+        statusBarBackgroundColor: 'transparent',
+      }}
     >
       <Stack.Screen name="Tabs" component={TabNavigator} />
       <Stack.Screen name="SellerStepOne" component={SellerStepOneScreen} />
-      <Stack.Screen name="Product" component={ProductScreen} />
+      <Stack.Screen 
+        name="Product" 
+        component={ProductScreen}
+        options={{
+          statusBarTranslucent: true,
+          statusBarBackgroundColor: 'transparent',
+        }}
+      />
       <Stack.Screen name="SellerProfileScreen" component={SellerProfileScreen} />
       <Stack.Screen name="CollectionScreen" component={CollectionScreen} />
       <Stack.Screen name="CurationScreen" component={CurationScreen} />

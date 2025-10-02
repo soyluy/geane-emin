@@ -23,12 +23,14 @@ const { width: SCREEN_W } = Dimensions.get('screen');
 const MENU_W = SCREEN_W * 0.6;
 const CONTENT_W = SCREEN_W * 0.8;
 
-const OPEN_DUR = 320;
-const CLOSE_DUR = 260;
+// Android stilinde hızlı animasyonlar
+const OPEN_DUR = 250;  // Android: 250ms açılış
+const CLOSE_DUR = 200; // Android: 200ms kapanış
 const EASE_OUT = Easing.out(Easing.cubic);
 const EASE_IN = Easing.in(Easing.cubic);
-const BACKDROP_MAX_MENU = 0.45;
-const BACKDROP_MAX_CONTENT = 0.25;
+// Android stilinde çok şeffaf backdrop
+const BACKDROP_MAX_MENU = 0.99;    // Daha belirgin karartma
+const BACKDROP_MAX_CONTENT = 0.99; // İçerik için biraz daha az
 
 const LINK_COLOR = '#4b4d50ff';
 
@@ -97,8 +99,17 @@ export default function UserMenu({
     if (isAnimating.current || isAnimatingContent.current) return;
     isAnimating.current = true;
     Animated.parallel([
-      Animated.timing(menuX, { toValue: 0, duration: OPEN_DUR, easing: EASE_OUT, useNativeDriver: true }),
-      Animated.timing(backdrop, { toValue: BACKDROP_MAX_MENU, duration: OPEN_DUR, easing: EASE_OUT, useNativeDriver: true }),
+      // Android stilinde smooth timing animasyonu
+      Animated.timing(menuX, { 
+        toValue: 0, 
+        duration: OPEN_DUR, 
+        useNativeDriver: true // Easing kaldırıldı, native driver için
+      }),
+      Animated.timing(backdrop, { 
+        toValue: BACKDROP_MAX_MENU, 
+        duration: OPEN_DUR, 
+        useNativeDriver: true 
+      }),
     ]).start(() => { isAnimating.current = false; });
   };
 
@@ -106,8 +117,17 @@ export default function UserMenu({
     if (isAnimating.current || isAnimatingContent.current) return;
     isAnimating.current = true;
     Animated.parallel([
-      Animated.timing(menuX, { toValue: MENU_W, duration: CLOSE_DUR, easing: EASE_IN, useNativeDriver: true }),
-      Animated.timing(backdrop, { toValue: 0, duration: CLOSE_DUR, easing: EASE_IN, useNativeDriver: true }),
+      // Android stilinde hızlı kapanış
+      Animated.timing(menuX, { 
+        toValue: MENU_W, 
+        duration: CLOSE_DUR, 
+        useNativeDriver: true 
+      }),
+      Animated.timing(backdrop, { 
+        toValue: 0, 
+        duration: CLOSE_DUR, 
+        useNativeDriver: true 
+      }),
     ]).start(() => { isAnimating.current = false; cb?.(); onClose?.(); });
   };
 
@@ -115,18 +135,36 @@ export default function UserMenu({
     if (isAnimatingContent.current) return;
     isAnimatingContent.current = true;
 
-    Animated.timing(menuX, { toValue: MENU_W, duration: CLOSE_DUR, easing: EASE_IN, useNativeDriver: true }).start();
-    Animated.timing(backdrop, { toValue: BACKDROP_MAX_CONTENT, duration: OPEN_DUR, easing: EASE_OUT, useNativeDriver: true }).start();
-    Animated.timing(contentX, { toValue: 0, duration: OPEN_DUR, easing: EASE_OUT, useNativeDriver: true })
-      .start(() => { isAnimatingContent.current = false; });
+    // Android stilinde paralel animasyonlar
+    Animated.timing(menuX, { 
+      toValue: MENU_W, 
+      duration: CLOSE_DUR, 
+      useNativeDriver: true 
+    }).start();
+    
+    Animated.timing(backdrop, { 
+      toValue: BACKDROP_MAX_CONTENT, 
+      duration: OPEN_DUR, 
+      useNativeDriver: true 
+    }).start();
+    
+    Animated.timing(contentX, { 
+      toValue: 0, 
+      duration: OPEN_DUR, 
+      useNativeDriver: true 
+    }).start(() => { isAnimatingContent.current = false; });
   };
 
   const closeContent = () => {
     if (isAnimatingContent.current) return;
     isAnimatingContent.current = true;
 
-    Animated.timing(contentX, { toValue: CONTENT_W, duration: CLOSE_DUR, easing: EASE_IN, useNativeDriver: true })
-      .start(() => {
+    // Android stilinde hızlı geri dönüş
+    Animated.timing(contentX, { 
+      toValue: CONTENT_W, 
+      duration: CLOSE_DUR, 
+      useNativeDriver: true 
+    }).start(() => {
         setSelectedPanel?.(null);
         isAnimatingContent.current = false;
         openMenu();
@@ -285,18 +323,24 @@ const basePanel = {
   top: 0,
   bottom: 0,
   right: 0,
-  backgroundColor: '#fff',
-  borderTopLeftRadius: 15,
-  borderBottomLeftRadius: 15,
+  // Android stilinde hafif şeffaf beyaz
+  backgroundColor: 'rgba(255, 255, 255, 0.96)',
+  borderTopLeftRadius: 0,    // Android'de köşe yuvarlaklığı yok
+  borderBottomLeftRadius: 0,
   overflow: 'hidden' as const,
   zIndex: 999,
-  elevation: 999,
-  borderLeftWidth: 1,
-  borderColor: 'rgba(0,0,0,0.08)',
+  // Android stilinde hafif elevation
+  elevation: 8,
+  shadowColor: 'rgba(0, 0, 0, 0.15)',
+  shadowOffset: { width: -2, height: 0 },
+  shadowOpacity: 0.2,
+  shadowRadius: 6,
+  borderLeftWidth: 0, // Border kaldırıldı
 };
 
 const styles = StyleSheet.create({
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: '#000' },
+  // Android stilinde daha belirgin backdrop
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.3)' },
   menuPanel: { ...basePanel, width: MENU_W },
   contentPanel: { ...basePanel, width: CONTENT_W },
   panelContent: { flex: 1 },

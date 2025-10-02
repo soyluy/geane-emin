@@ -1,6 +1,6 @@
 // mobile/src/app/components/ui/TextField.tsx
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 import {
   TextInput,
   StyleSheet,
@@ -9,7 +9,7 @@ import {
   Platform,
 } from 'react-native';
 
-export default function TextField(props: TextInputProps) {
+const TextField = forwardRef<TextInput, TextInputProps>((props, ref) => {
   // Tam ekran (status + nav bar DAHİL) taban
   const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('screen');
 
@@ -21,6 +21,7 @@ export default function TextField(props: TextInputProps) {
 
   return (
     <TextInput
+      ref={ref}
       {...props}
       style={[
         styles.input,
@@ -44,7 +45,11 @@ export default function TextField(props: TextInputProps) {
       placeholderTextColor="#888"
     />
   );
-}
+});
+
+TextField.displayName = 'TextField';
+
+export default TextField;
 
 const styles = StyleSheet.create({
   input: {

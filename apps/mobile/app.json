@@ -21,6 +21,9 @@
       "package": "com.anonymous.codebasemobile"
     },
     "web": { "favicon": "./assets/favicon.png", "bundler": "metro" },
-    "plugins": ["expo-font", "expo-navigation-bar"]
+    "plugins": ["expo-font", "expo-navigation-bar"],
+    "experiments": {
+      "newArchEnabled": true
+    }
   }
 }

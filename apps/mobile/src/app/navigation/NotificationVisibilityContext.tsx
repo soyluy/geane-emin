@@ -14,10 +14,13 @@ export const useNotificationVisibility = () => useContext(NotificationVisibility
 
 export const NotificationVisibilityProvider = ({ children }: { children: React.ReactNode }) => {
   const [notificationVisible, setNotificationVisible] = useState(false);
+  
+  // Guard: children null ise null döndür
+  if (!children) return null;
 
   return (
     <NotificationVisibilityContext.Provider value={{ notificationVisible, setNotificationVisible }}>
-      {children} {/* ✅ Bu şekilde süslü parantez içinde yazıldığı sürece HİÇBİR UYARI vermez */}
+      {children}
     </NotificationVisibilityContext.Provider>
   );
 };

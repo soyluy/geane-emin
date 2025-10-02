@@ -5,34 +5,35 @@ import {
   Dimensions,
   StatusBar,
   Animated,
+  ScrollView,
 } from 'react-native';
 
 import DiscoverSearchBar from '../components/ui/DiscoverSearchBar';
 import TopBox from '../components/ui/TopBox';
 import FilterBar from '../components/ui/FilterBar';
-import ImportantThingsCardsArea, { Card } from '../components/ui/ImportantThingsCardsArea';
+import ImportantThingsCardsArea from '../components/ui/ImportantThingsCardsArea';
 import CollectionArea from '../components/ui/CollectionArea';
 import CurationArea from '../components/ui/CurationArea';
-import UserMenu from '../components/ui/UserMenu';
 import CartPanel from '../components/ui/CartPanel';
 import NotificationPanel from '../components/ui/NotificationPanel';
 
 import { useCartVisibility } from '../navigation/CartVisibilityContext';
 import { useNotificationVisibility } from '../navigation/NotificationVisibilityContext';
+import { useUserMenuVisibility } from '../navigation/UserMenuVisibilityContext';
 
 const { height: SCREEN_H, width: SCREEN_W } = Dimensions.get('screen');
 const TOPBOX_HEIGHT = SCREEN_H * 0.08698;
 const EXTRA_SCROLL_HEIGHT = SCREEN_H * 0.15;
 
 export default function ExploreScreen() {
-  const scrollRef = useRef<Animated.ScrollView>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const translateYAnim = useRef(new Animated.Value(0)).current;
   const lastOffsetY = useRef(0);
   const [headerVisible, setHeaderVisible] = useState(true);
-  const [menuVisible, setMenuVisible] = useState(false);
 
   const { cartVisible, setCartVisible } = useCartVisibility();
   const { notificationVisible, setNotificationVisible } = useNotificationVisibility();
+  const { userMenuVisible, setUserMenuVisible } = useUserMenuVisibility();
 
   const handleScroll = (e: any) => {
     const y = e.nativeEvent.contentOffset.y;
@@ -58,18 +59,18 @@ export default function ExploreScreen() {
     lastOffsetY.current = y;
   };
 
-  const importantData: Card[] = [
+  const importantData = [
     {
       title: 'Haftanın Enleri',
-      imageUri: require('../../../assets/images/important-things/haftanin-enleri.jpg'),
+      image: require('../../../assets/images/important-things/haftanin-enleri.jpg'),
     },
     {
       title: 'Keşif',
-      imageUri: require('../../../assets/images/important-things/kesif.jpg'),
+      image: require('../../../assets/images/important-things/kesif.jpg'),
     },
     {
       title: 'Kombinler',
-      imageUri: require('../../../assets/images/important-things/Kombinler.jpg'),
+      image: require('../../../assets/images/important-things/Kombinler.jpg'),
     },
   ];
 
@@ -93,7 +94,7 @@ export default function ExploreScreen() {
 
   return (
     <View style={styles.fullscreen}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
       <Animated.View
         style={[
@@ -103,7 +104,7 @@ export default function ExploreScreen() {
       >
         <TopBox
           title="Keşfet"
-          onMenuPress={() => setMenuVisible(true)}
+          onMenuPress={() => setUserMenuVisible(true)}
           onCartPress={() => setCartVisible(true)}
           onNotificationPress={() => setNotificationVisible(true)}
         />
@@ -145,14 +146,6 @@ export default function ExploreScreen() {
 
         <View style={{ height: EXTRA_SCROLL_HEIGHT }} />
       </Animated.ScrollView>
-
-      <UserMenu
-        visible={menuVisible}
-        onClose={() => setMenuVisible(false)}
-        onNavigateToSellerForm={() => {
-          console.log('Satıcı Başvurusuna yönlendirildi');
-        }}
-      />
 
       <CartPanel
         visible={cartVisible}

@@ -1,24 +1,19 @@
 import React from 'react';
 import { Text, StyleSheet } from 'react-native';
-import SlideInPanel from './SlideInPanel';
-import BackButton from './BackButton';
 
 interface Props {
-  visible: boolean;
   onClose: () => void;
 }
 
-export default function HelpPanel({ visible, onClose }: Props) {
+export default function HelpPanel({ onClose }: Props) {
   return (
-    <SlideInPanel visible={visible} onClose={onClose}>
-      <BackButton onPress={onClose} style={styles.backButton} />
+    <>
       <Text style={styles.title}>Yardım Merkezi</Text>
       {/* Orijinal içerik */}
-    </SlideInPanel>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  backButton: { position: 'absolute', top: 16, left: 16 },
-  title: { marginTop: 48, fontSize: 18, fontWeight: '600' },
+  title: { marginTop: 16, fontSize: 18, fontWeight: '600' },
 });
