@@ -8,6 +8,7 @@ import {
   StatusBar,
   Platform,
   Text,
+  AppState,
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -51,13 +52,14 @@ function MainApp() {
   const [showLogin, setShowLogin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // ⬇️ NAVIGATION BAR SETUP - DOĞRU TIMING
+  // ⬇️ AGGRESSIVE NAVIGATION BAR SETUP - APP RESTART FIX
   useEffect(() => {
-    if (Platform.OS !== 'android' || !isLoggedIn) return;
+    if (Platform.OS !== 'android') return;
     
     const setupNavigationBar = async () => {
       try {
-        await NavigationBar.setBackgroundColorAsync('rgba(255, 255, 255, 0.06)');
+        // Daha güçlü şeffaflık değeri deneyelim
+        await NavigationBar.setBackgroundColorAsync('rgba(252, 252, 252, 0.01)'); // Neredeyse tamamen şeffaf
         await NavigationBar.setButtonStyleAsync('dark');
         
         try {
@@ -72,17 +74,65 @@ function MainApp() {
           await NavigationBar.setPositionAsync('absolute');
         }
         
-        console.log('✅ Navigation Bar: Ana uygulama yüklendikten sonra şeffaflık uygulandı');
+        console.log('✅ Navigation Bar: AGGRESSIVE setup tamamlandı');
       } catch (error) {
         console.log('❌ Navigation Bar error:', String(error));
       }
     };
     
-    // Ana uygulama yüklendikten sonra delay ile uygula
-    const timer = setTimeout(setupNavigationBar, 300);
+    // ⬇️ MULTIPLE ATTEMPTS - APP RESTART İÇİN
+    const attemptSetup = () => {
+      setupNavigationBar();
+      // 500ms sonra tekrar dene
+      setTimeout(setupNavigationBar, 500);
+      // 1s sonra tekrar dene  
+      setTimeout(setupNavigationBar, 1000);
+      // 2s sonra tekrar dene
+      setTimeout(setupNavigationBar, 2000);
+    };
     
+    // Hemen başlat
+    attemptSetup();
+    
+    // App state değişikliklerinde de çalıştır
+    const handleAppStateChange = (nextAppState: string) => {
+      if (nextAppState === 'active') {
+        console.log('🔄 App became active, re-applying navigation bar');
+        setTimeout(setupNavigationBar, 100);
+      }
+    };
+    
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    
+    return () => {
+      subscription?.remove();
+    };
+  }, []); // Sadece mount'ta bir kez
+
+  // ⬇️ LOGIN SONRASI EK KONTROL
+  useEffect(() => {
+    if (Platform.OS !== 'android' || !isLoggedIn) return;
+    
+    const reinforceNavigationBar = async () => {
+      try {
+        await NavigationBar.setBackgroundColorAsync('rgba(0, 0, 0, 0.01)');
+        await NavigationBar.setButtonStyleAsync('dark');
+        
+        try {
+          await NavigationBar.setBehaviorAsync('overlay-swipe');
+        } catch {
+          await NavigationBar.setBehaviorAsync('inset-swipe');
+        }
+        
+        console.log('✅ Navigation Bar: Login sonrası güçlendirildi');
+      } catch (error) {
+        console.log('❌ Navigation Bar reinforce error:', String(error));
+      }
+    };
+    
+    const timer = setTimeout(reinforceNavigationBar, 100);
     return () => clearTimeout(timer);
-  }, [isLoggedIn]); // isLoggedIn değiştiğinde çalışır
+  }, [isLoggedIn]);
 
   const handleLoginContent = (type: string) => {
     switch (type) {
