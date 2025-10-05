@@ -16,8 +16,11 @@ import {
 // ⚠️ Kart ölçülerine DOKUNMUYORUZ — orijinal sabitler:
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('screen'); // mevcutta böyleydi
 
-const CONTAINER_HEIGHT   = SCREEN_H * 0.19313;          // orijinal
-const CARD_WIDTH         = SCREEN_W * 0.27906;          // orijinal
+export const CONTAINER_HEIGHT   = SCREEN_H * 0.190;          // orijinal
+export const CARD_WIDTH         = SCREEN_W * 0.27906;          // orijinal
+export const CARD_SPACING       = SCREEN_W * 0.02325;          // kartlar arası boşluk
+export const FIRST_CARD_MARGIN  = SCREEN_W * 0.03953;          // ilk kartın margin'i
+export const ROW_SPACING        = SCREEN_H * 0.01931;          // satırlar arası boşluk
 const TEXTBOX_SIDE_RATIO = 0.08333;                     // orijinal
 
 interface Props {

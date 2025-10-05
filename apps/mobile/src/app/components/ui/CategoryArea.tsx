@@ -3,6 +3,7 @@ import { View, StyleSheet, Modal, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FieldHeader from './FieldHeader';
 import CategoryContainer, { Category } from './CategoryContainer';
+import { CARD_WIDTH, CARD_SPACING } from './CategoryCard';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { AppStackParamList } from '../../navigation/AppNavigator';
@@ -14,6 +15,8 @@ interface Props {
 }
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('screen');
+
+const ROW_HEIGHT_RATIO = 0.223; // Safe area'ya göre satır yükseklik oranı
 
 export default function CategoryArea({ title, items = [], onPressItem }: Props) {
   const insets = useSafeAreaInsets();
@@ -28,9 +31,7 @@ export default function CategoryArea({ title, items = [], onPressItem }: Props) 
   const horizontalOffsetRef = useRef(0);
   const verticalOffsetRef = useRef(0);
 
-  const CARD_WIDTH = SCREEN_W * 0.27906;
-  const CARD_SPACING = SCREEN_W * 0.02325;
-  const ROW_HEIGHT = safeH * 0.223;
+  const ROW_HEIGHT = safeH * ROW_HEIGHT_RATIO;
 
   const itemsSafe: Category[] = Array.isArray(items) ? items : []; // ⬅️ güvenli
 

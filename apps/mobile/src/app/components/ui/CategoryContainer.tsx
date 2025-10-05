@@ -4,12 +4,12 @@ import React, { useEffect, useRef } from 'react';
 import {
   FlatList,
   View,
-  Dimensions,
   StyleSheet,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Dimensions,
 } from 'react-native';
-import CategoryCard from './CategoryCard';
+import CategoryCard, { CARD_SPACING, FIRST_CARD_MARGIN, ROW_SPACING } from './CategoryCard';
 import { getCategoryCoverById } from '../../../assets/images/categoryCovers.manifest';
 
 export interface Category {
@@ -27,7 +27,8 @@ interface Props {
   onPressItem?: (item: Category) => void;
 }
 
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('screen');
+const { height: SCREEN_H } = Dimensions.get('screen');
+const CONTAINER_PADDING_BOTTOM = SCREEN_H * 0.03; // Container alt padding
 
 export default function CategoryContainer({
   items = [], // default boş dizi
@@ -38,11 +39,6 @@ export default function CategoryContainer({
   onVerticalScroll,
   onPressItem,
 }: Props) {
-  const CONTAINER_HEIGHT = SCREEN_H * 0.19313;
-  const CARD_WIDTH = SCREEN_W * 0.27906;
-  const FIRST_CARD_MARGIN = SCREEN_W * 0.03953;
-  const CARD_SPACING = SCREEN_W * 0.02325;
-
   const hRef = useRef<FlatList>(null);
   const vRef = useRef<FlatList>(null);
 
@@ -117,7 +113,7 @@ export default function CategoryContainer({
               marginLeft={CARD_SPACING}
             />
           ) : (
-            <View style={{ width: CARD_WIDTH }} />
+            <View style={{ flex: 1 }} />
           )}
 
           {i3 ? (
@@ -128,14 +124,14 @@ export default function CategoryContainer({
               marginLeft={CARD_SPACING}
             />
           ) : (
-            <View style={{ width: CARD_WIDTH }} />
+            <View style={{ flex: 1 }} />
           )}
         </View>
       )}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingHorizontal: SCREEN_W * 0.03953,
-        paddingBottom: SCREEN_H * 0.03,
+        paddingHorizontal: FIRST_CARD_MARGIN,
+        paddingBottom: CONTAINER_PADDING_BOTTOM,
       }}
       onScroll={(e: NativeSyntheticEvent<NativeScrollEvent>) =>
         onVerticalScroll?.(e.nativeEvent.contentOffset.y)
@@ -149,6 +145,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    marginBottom: SCREEN_H * 0.01931,
+    marginBottom: ROW_SPACING,
   },
 });

@@ -179,7 +179,7 @@ export default function FieldHeader({
 }
 
 const styles = StyleSheet.create({
-  container:    { width: '100%', backgroundColor: '#FFFFFF' },
+  container:    { width: '100%', backgroundColor: '#ffffffff' },
   wrapper:      { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   textContainer:{ flex: 1, justifyContent: 'center' },
 
