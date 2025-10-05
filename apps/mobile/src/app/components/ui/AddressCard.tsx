@@ -95,14 +95,16 @@ const styles = StyleSheet.create({
   },
   addressBox: {
     backgroundColor: '#ffffff',
-    padding: 12,
+    padding: 16, // 12'den 16'ya artırıldı - daha ferah
     borderRadius: 10,
     borderColor: '#E0E0E0',
     borderWidth: 1,
+    minHeight: 120, // Minimum yükseklik eklendi - tutarlılık için
   },
   line: {
     fontSize: 14,
     color: '#333',
-    marginBottom: 4,
+    marginBottom: 6, // 4'ten 6'ya artırıldı - daha iyi okunabilirlik
+    lineHeight: 20, // Satır yüksekliği eklendi - daha rahat okuma
   },
 });

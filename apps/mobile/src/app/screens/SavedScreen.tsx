@@ -9,7 +9,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 
 import TopBox from '../components/ui/TopBox';
-import UserMenu from '../components/ui/UserMenu';
+import UserMenu from '../components/ui/UserMenü/UserMenu';
 import CartPanel from '../components/ui/CartPanel';
 import NotificationPanel from '../components/ui/NotificationPanel'; // ✅ EKLENDİ
 

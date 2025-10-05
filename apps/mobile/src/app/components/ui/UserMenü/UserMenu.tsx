@@ -1,4 +1,4 @@
-// src/app/components/ui/UserMenu.tsx
+// src/app/components/ui/UserMenü/UserMenu.tsx
 import React, { useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Animated, Image,
@@ -7,16 +7,24 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // ALT PANELLER
-import CardPanel from './CardPanel';
-import OrderTrackingPanel from './OrderTrackingPanel';
-import CustomerSupportPanel from './CustomerSupportPanel';
-import InboxPanel from './InboxPanel';
-import AddressPanel from './AddressPanel';
-import PrivacyPanel from './PrivacyPanel';
-import HelpPanel from './HelpPanel';
-import AboutPanel from './AboutPanel';
+import CardPanel from '../CardPanel';
+import MyOrdersPanel from './MyOrdersPanel';
+import CustomerSupportPanel from '../CustomerSupportPanel';
+import InboxPanel from '../InboxPanel';
+import AddressPanel from '../AddressPanel';
+import PrivacyPanel from '../PrivacyPanel';
+import HelpPanel from '../HelpPanel';
+import AboutPanel from '../AboutPanel';
 
-import PanelShell from './PanelShell';
+import { ScrollView, TouchableOpacity } from 'react-native';
+import RightModal from '../Modals/RightModal';
+
+// Icons for different panels
+import FilterIcon from '../../../../../assets/icons/nav/filter.svg';
+import SearchIcon from '../../../../../assets/icons/nav/search.svg';
+import NotificationIcon from '../../../../../assets/icons/nav/notification-active.svg';
+import BookmarkIcon from '../../../../../assets/icons/nav/bookmark.svg';
+import KebabMenuIcon from '../../../../../assets/icons/nav/Kebab-menu.svg';
 
 const { width: SCREEN_W } = Dimensions.get('screen');
 
@@ -35,7 +43,7 @@ const BACKDROP_MAX_CONTENT = 0.99; // İçerik için biraz daha az
 const LINK_COLOR = '#4b4d50ff';
 
 const MENU_ITEMS = [
-  { label: ' Sipariş Takip', action: 'orderTracking' },
+  { label: ' Siparişlerim', action: 'orderTracking' },
   { label: ' Müşteri Hizmetleri', action: 'customerSupport' },
   { label: ' Gelen Kutusu', action: 'inbox' },
   { label: ' Adreslerini Düzenle', action: 'editAddresses' },
@@ -47,16 +55,77 @@ const MENU_ITEMS = [
   { label: ' Çıkış Yap', action: 'logout' },
 ];
 
-const PANEL_REGISTRY: Record<string, { title: string; Render: (p:{onClose:()=>void}) => JSX.Element }> = {
-  orderTracking:   { title: 'Sipariş Takip',        Render: ({onClose}) => <OrderTrackingPanel onClose={onClose} /> },
-  customerSupport: { title: 'Müşteri Hizmetleri',   Render: ({onClose}) => <CustomerSupportPanel onClose={onClose} /> },
-  inbox:           { title: 'Gelen Kutusu',         Render: ({onClose}) => <InboxPanel onClose={onClose} messages={[{ id:'1', title:'Yeni Mesaj', content:'Gelen kutun güncellendi.', date:'09.08.2025' }]} /> },
-  editAddresses:   { title: 'Adreslerini Düzenle',  Render: ({onClose}) => <AddressPanel onClose={onClose} /> },
-  manageCards:     { title: 'Kart Ekle/Kaldır',     Render: ({onClose}) => <CardPanel onClose={onClose} cards={[]} selectedCardId={null} onChangeSelected={()=>{}} onAddCard={()=>{}} onRemoveCard={()=>{}} /> },
-  privacySettings: { title: 'Hesap Gizliliği',      Render: ({onClose}) => <PrivacyPanel onClose={onClose} /> },
-  helpCenter:      { title: 'Yardım Merkezi',       Render: ({onClose}) => <HelpPanel onClose={onClose} /> },
-  about:           { title: 'Hakkımızda',           Render: ({onClose}) => <AboutPanel onClose={onClose} /> },
+const PANEL_REGISTRY: Record<string, { 
+  title: string; 
+  Render: (p:{onClose:()=>void}) => JSX.Element;
+  icons?: any[];
+  iconsTopOffset?: number;
+}> = {
+  // Render should return only the panel body; RightModal wrapping is handled in renderContent
+  orderTracking:   { 
+    title: 'Siparişlerim',         
+    Render: ({onClose}) => <MyOrdersPanel onClose={onClose} />,
+    icons: [
+      { icon: FilterIcon, onPress: () => console.log('Filter orders'), accessibilityLabel: 'Filtrele' },
+      { icon: SearchIcon, onPress: () => console.log('Search orders'), accessibilityLabel: 'Ara' },
+      { icon: KebabMenuIcon, onPress: () => console.log('More options'), accessibilityLabel: 'Daha Fazla Seçenek' },
+    ],
+    iconsTopOffset: 0.25 // %25 aşağısı
+  },
+  customerSupport: { 
+    title: 'Müşteri Hizmetleri',   
+    Render: ({onClose}) => <CustomerSupportPanel onClose={onClose} />,
+    icons: [
+      { icon: NotificationIcon, onPress: () => console.log('Notifications'), accessibilityLabel: 'Bildirimler' },
+    ],
+    iconsTopOffset: 0.30 // %30 aşağısı
+  },
+  inbox:           { 
+    title: 'Gelen Kutusu',         
+    Render: ({onClose}) => <InboxPanel onClose={onClose} messages={[{ id:'1', title:'Yeni Mesaj', content:'Gelen kutun güncellendi.', date:'09.08.2025' }]} />,
+    // İkon yok
+  },
+  editAddresses:   { 
+    title: 'Adreslerini Düzenle',  
+    Render: ({onClose}) => <AddressPanel onClose={onClose} />,
+    // İkon yok
+  },
+  manageCards:     { 
+    title: 'Kart Ekle/Kaldır',     
+    Render: ({onClose}) => <CardPanel onClose={onClose} />,
+    // İkon yok
+  },
+  privacySettings: { 
+    title: 'Hesap Gizliliği',      
+    Render: ({onClose}) => <PrivacyPanel onClose={onClose} />,
+    // İkon yok
+  },
+  helpCenter:      { 
+    title: 'Yardım Merkezi',       
+    Render: ({onClose}) => <HelpPanel onClose={onClose} />,
+    icons: [
+      { icon: SearchIcon, onPress: () => console.log('Search help'), accessibilityLabel: 'Yardımda Ara' },
+    ]
+  },
+  about:           { 
+    title: 'Hakkımızda',           
+    Render: ({onClose}) => <AboutPanel onClose={onClose} />,
+    // İkon yok
+  },
 };
+
+interface UserMenuProps {
+  visible: boolean;
+  onClose: () => void;
+  onNavigateToSellerForm?: () => void;
+  onSelectPanel?: (panel: string) => void;
+  selectedPanel: string | null;
+  setSelectedPanel?: (panel: string | null) => void;
+  disableBack?: boolean;
+  onNavigateToProfile?: () => void;
+  avatarUri?: string;
+  displayName?: string;
+}
 
 export default function UserMenu({
   visible,
@@ -69,7 +138,7 @@ export default function UserMenu({
   onNavigateToProfile,
   avatarUri,
   displayName = 'Emin Sarp',
-}) {
+}: UserMenuProps) {
   const insets = useSafeAreaInsets();
 
   const menuX = useRef(new Animated.Value(MENU_W)).current;
@@ -128,7 +197,38 @@ export default function UserMenu({
         duration: CLOSE_DUR, 
         useNativeDriver: true 
       }),
-    ]).start(() => { isAnimating.current = false; cb?.(); onClose?.(); });
+    ]).start(() => { 
+      isAnimating.current = false; 
+      if (cb && typeof cb === 'function') {
+        cb();
+      }
+      if (onClose && typeof onClose === 'function') {
+        onClose();
+      }
+    });
+  };
+
+  // Menü kapatma ama UserMenu'ü parent'a kapatma isteği göndermeyen versiyon
+  // (RightModal açılacaksa kullan)
+  const closeMenuLocal = (cb?: () => void) => {
+    if (isAnimating.current || isAnimatingContent.current) return;
+    isAnimating.current = true;
+    Animated.parallel([
+      Animated.timing(menuX, {
+        toValue: MENU_W,
+        duration: CLOSE_DUR,
+        useNativeDriver: true,
+      }),
+      Animated.timing(backdrop, {
+        toValue: 0,
+        duration: CLOSE_DUR,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      isAnimating.current = false;
+      if (cb && typeof cb === 'function') cb();
+      // note: do NOT call onClose here - keep UserMenu mounted so RightModal can render
+    });
   };
 
   const openContent = () => {
@@ -190,28 +290,47 @@ export default function UserMenu({
     if (!visible || disableBack) return;
     const onBack = () => {
       if (selectedPanel) { closeContent(); return true; }
-      closeMenu(); return true;
+      closeMenu(); 
+      return true;
     };
     const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
     return () => sub.remove();
   }, [visible, disableBack, selectedPanel]);
 
   const handleSelect = (action: string) => {
-    if (action === 'seller') {
-      pendingAfterClose.current = onNavigateToSellerForm || null;
-      closeMenu(() => { const fn = pendingAfterClose.current; pendingAfterClose.current = null; fn?.(); });
+    if (action === 'orderTracking') {
+      console.log('[UserMenu] orderTracking selected');
+      // Eğer menü hâlâ açılma animasyonundaysa, hemen paneli set et
+      if (isAnimating.current) {
+        setSelectedPanel?.(action);
+        onSelectPanel?.(action);
+        closeMenuLocal();
+        return;
+      }
+      // Normal akış: menüyü kapat ve callback ile paneli aç
+      pendingAfterClose.current = () => {
+        setSelectedPanel?.(action);
+        onSelectPanel?.(action);
+      };
+      closeMenuLocal(() => { const fn = pendingAfterClose.current; pendingAfterClose.current = null; fn?.(); });
       return;
     }
-    if (action === 'logout') {
+      if (action === 'seller') {
+        pendingAfterClose.current = onNavigateToSellerForm || null;
+        closeMenu(() => { const fn = pendingAfterClose.current; pendingAfterClose.current = null; fn?.(); });
+        return;
+      }
+      if (action === 'logout') {
       Alert.alert('Çıkış', 'Hesabınızdan çıkmak istediğinize emin misiniz?', [
         { text: 'Vazgeç', style: 'cancel' },
         { text: 'Çık', style: 'destructive', onPress: () => {} },
       ]);
       return;
     }
-    setSelectedPanel?.(action);
-    onSelectPanel?.(action);
-    openContent();
+      // For all other panels: set selected panel and close menu locally so RightModal can render
+      setSelectedPanel?.(action);
+      onSelectPanel?.(action);
+      closeMenuLocal();
   };
 
   const handleProfilePress = () => {
@@ -229,26 +348,39 @@ export default function UserMenu({
 
   const renderContent = () => {
     if (!selectedPanel) return null;
+    console.log('[UserMenu] renderContent for', selectedPanel);
     const meta = PANEL_REGISTRY[selectedPanel];
     if (!meta) return null;
     const Body = meta.Render;
 
+    // Wrap every panel in RightModal (PanelShell removed; render header + content here)
     return (
-      <PanelShell title={meta.title} onClose={closeContent}>
-        <Body onClose={closeContent} />
-      </PanelShell>
+      <RightModal 
+        visible={true} 
+        onClose={closeContent} 
+        title={meta.title}
+        icons={meta.icons}
+        iconsTopOffset={meta.iconsTopOffset}
+      >
+        <View style={{ flex: 1 }}>
+          <ScrollView>
+            <Body onClose={closeContent} />
+          </ScrollView>
+        </View>
+      </RightModal>
     );
   };
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      statusBarTranslucent
-      presentationStyle="overFullScreen"
-      animationType="none"
-      onRequestClose={() => (selectedPanel ? closeContent() : closeMenu())}
-    >
+    <>
+      <Modal
+        transparent
+        visible={visible}
+        statusBarTranslucent
+        presentationStyle="overFullScreen"
+        animationType="none"
+        onRequestClose={() => (selectedPanel ? closeContent() : closeMenu())}
+      >
       <TouchableWithoutFeedback onPress={() => (selectedPanel ? closeContent() : closeMenu())}>
         <Animated.View style={[styles.backdrop, { opacity: backdrop }]} />
       </TouchableWithoutFeedback>
@@ -264,7 +396,7 @@ export default function UserMenu({
       >
         <View style={[styles.panelContent, { paddingTop: insets.top + 40, paddingBottom: insets.bottom }]}>
           <View style={styles.logoWrap}>
-            <Image source={require('../../../../assets/images/LOGO.png')} style={styles.logo} resizeMode="contain" />
+            <Image source={require('../../../../../assets/images/LOGO.png')} style={styles.logo} resizeMode="contain" />
           </View>
 
           <Pressable
@@ -302,19 +434,10 @@ export default function UserMenu({
         </View>
       </Animated.View>
 
-      {selectedPanel && (
-        <Animated.View
-          style={[
-            styles.contentPanel,
-            { transform: [{ translateX: contentX }], marginBottom: -insets.bottom },
-          ]}
-          accessibilityViewIsModal
-          importantForAccessibility="yes"
-        >
-          {renderContent()}
-        </Animated.View>
-      )}
+      {/* Render panel content inside RightModal for all selectedPanel values */}
+      {selectedPanel && renderContent()}
     </Modal>
+    </>
   );
 }
 
@@ -343,6 +466,14 @@ const styles = StyleSheet.create({
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.3)' },
   menuPanel: { ...basePanel, width: MENU_W },
   contentPanel: { ...basePanel, width: CONTENT_W },
+  rightModalPanel: { 
+    position: 'absolute' as const,
+    top: 0,
+    bottom: 0,
+    right: 0,
+    width: SCREEN_W * 0.75, // RightModal genişliği
+    zIndex: 1000,
+  },
   panelContent: { flex: 1 },
   logoWrap: { paddingHorizontal: 16, marginBottom: 12 },
   logo: { width: 90, height: 24 },

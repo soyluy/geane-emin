@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MainScreen from '../screens/MainScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import SavedScreen from '../screens/SavedScreen';
-import UserMenu from '../components/ui/UserMenu';
+import UserMenu from '../components/ui/UserMenü/UserMenu';
 
 // Pasif ikonlar
 import HomeIcon from '../../../assets/icons/nav/home.svg';
