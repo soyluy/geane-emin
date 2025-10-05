@@ -27,23 +27,11 @@ export default function AppNavigator() {
   return (
     <Stack.Navigator
       initialRouteName="Tabs"
-      screenOptions={{ 
-        headerShown: false,
-        animation: 'slide_from_right',
-        statusBarTranslucent: true,
-        statusBarBackgroundColor: 'transparent',
-      }}
+      screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Tabs" component={TabNavigator} />
       <Stack.Screen name="SellerStepOne" component={SellerStepOneScreen} />
-      <Stack.Screen 
-        name="Product" 
-        component={ProductScreen}
-        options={{
-          statusBarTranslucent: true,
-          statusBarBackgroundColor: 'transparent',
-        }}
-      />
+      <Stack.Screen name="Product" component={ProductScreen} />
       <Stack.Screen name="SellerProfileScreen" component={SellerProfileScreen} />
       <Stack.Screen name="CollectionScreen" component={CollectionScreen} />
       <Stack.Screen name="CurationScreen" component={CurationScreen} />
