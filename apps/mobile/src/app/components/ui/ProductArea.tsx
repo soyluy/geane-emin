@@ -5,7 +5,7 @@ import { View, StyleSheet, Modal, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FieldHeader from './FieldHeader';
 import ProductContainer from './ProductContainer';
-import { H_CARD_H, H_IMAGE_W } from './ProductCard'; // ✅ ProductCard'dan import
+// ✅ Artık ProductCard'dan import gerekmiyor - sadece toggle hesaplaması için sabit değer
 
 interface ProductAreaProps {
   title: string;
@@ -26,6 +26,7 @@ function ProductArea({
   // Yatay için sadece spacing ve padding (boyutlar ProductCard'da)
   const H_SPACING = SCREEN_W * 0.02325;
   const H_PADDING = SCREEN_W * 0.03953;
+  const H_IMAGE_W = SCREEN_W * 0.27906; // Toggle hesaplaması için local sabit
 
   // Dikey metrikler (Container ile bire bir)
   const V_CARD_W = SCREEN_W * 0.46511;
@@ -121,14 +122,13 @@ function ProductArea({
       </View>
 
       {isHorizontal ? (
-        <View style={{ height: H_CARD_H }}>
-          <ProductContainer
-            items={items}
-            isHorizontal
-            initialHorizontalOffset={initialHorizontalOffset}
-            onHorizontalScroll={(offsetX) => (horizontalOffsetRef.current = offsetX)}
-          />
-        </View>
+        /* ✅ Esnek container - sabit yükseklik yok */
+        <ProductContainer
+          items={items}
+          isHorizontal
+          initialHorizontalOffset={initialHorizontalOffset}
+          onHorizontalScroll={(offsetX) => (horizontalOffsetRef.current = offsetX)}
+        />
       ) : (
         <Modal visible animationType="slide" onRequestClose={toggleMode}>
           <View style={[styles.modalWrapper, { height: SCREEN_H * 1 }]}>

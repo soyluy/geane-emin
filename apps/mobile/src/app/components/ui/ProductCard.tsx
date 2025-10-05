@@ -26,13 +26,11 @@ type ProductNavProp = StackNavigationProp<RootStackParamList, 'Product'>;
 // ✅ Boyut hesaplamaları - Tek kaynak
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('screen');
 
-// Yatay kart boyutları
-export const H_IMAGE_W = SCREEN_W * 0.27906;  // %27.906
-export const H_IMAGE_H = SCREEN_H * 0.21459;  // %21.459  
-export const H_TITLE_H = 20; // Başlık yüksekliği sabit
-export const H_CARD_H = H_IMAGE_H + H_TITLE_H; // Toplam yükseklik
+// Yatay kart boyutları - sadece internal kullanım
+const H_IMAGE_W = SCREEN_W * 0.27906;  // %27.906
+const H_IMAGE_H = SCREEN_H * 0.21459;  // %21.459  
 
-// Dikey kart boyutları
+// Dikey kart boyutları - export edilmeli
 export const TITLE_BOX_H = SCREEN_H * 0.04296;
 
 export interface ProductCardProps {
@@ -70,14 +68,8 @@ function ProductCardInner({
   // ₺3.855 formatı (kuruş yok, binlik ayırıcı nokta)
   const formatPrice = (price: number) => '₺' + Math.floor(price).toLocaleString('tr-TR');
 
-  // Başlık kısaltma fonksiyonu (36 karakter maksimum)
-  const truncateTitle = (title: string, maxLength: number = 36) => {
-    if (title.length <= maxLength) return title;
-    return title.substring(0, maxLength) + '...';
-  };
-
   if (isHorizontal) {
-    // — YATAY KART — (sadece fotoğraf + başlık, kapsayıcı yok)
+    // — YATAY KART — (tamamen esnek, sınırlayıcı kapsayıcı yok)
     return (
       <TouchableOpacity
         activeOpacity={0.8}
@@ -89,10 +81,7 @@ function ProductCardInner({
             price: formatPrice(product.price),
           })
         }
-        style={{
-          width: H_IMAGE_W,
-          height: H_CARD_H,
-        }}
+        // ✅ Hiçbir boyut sınırlaması yok - tamamen esnek
       >
         {/* Ürün fotoğrafı - kapsayıcı yok */}
         <Image
@@ -106,12 +95,15 @@ function ProductCardInner({
         />
 
         {/* Başlık */}
-        <Text 
-          style={[styles.horizontalTitleText]}
-          numberOfLines={1}
-        >
-          {truncateTitle(product.title, 36)}
-        </Text>
+        <View style={{ width: H_IMAGE_W }}>
+          <Text 
+            style={[styles.horizontalTitleText]}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {product.title}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -286,6 +278,8 @@ const styles = StyleSheet.create({
     color: '#303336',
     marginTop: 8,
     textAlign: 'left',
+    lineHeight: 14, // 2 satır için uygun satır yüksekliği
+    width: '100%', // Container genişliğini kullan
   },
   titleText: {
     fontSize: 10,
