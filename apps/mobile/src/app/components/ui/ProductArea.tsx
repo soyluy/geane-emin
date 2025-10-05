@@ -5,6 +5,7 @@ import { View, StyleSheet, Modal, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FieldHeader from './FieldHeader';
 import ProductContainer from './ProductContainer';
+import { H_CARD_H, H_IMAGE_W } from './ProductCard'; // ✅ ProductCard'dan import
 
 interface ProductAreaProps {
   title: string;
@@ -22,18 +23,14 @@ function ProductArea({
   const insets = useSafeAreaInsets();
   const safeH = SCREEN_H - insets.top - insets.bottom;
 
-  // Yatay metrikler (Container ile bire bir)
-  const H_CARD_W   = SCREEN_W * 0.27906;
-  const H_IMAGE_H  = safeH   * 0.215;
-  const H_TITLE_H  = safeH   * 0.041;
-  const H_CARD_H   = H_IMAGE_H + H_TITLE_H;
-  const H_SPACING  = SCREEN_W * 0.02325;
-  const H_PADDING  = SCREEN_W * 0.03953;
+  // Yatay için sadece spacing ve padding (boyutlar ProductCard'da)
+  const H_SPACING = SCREEN_W * 0.02325;
+  const H_PADDING = SCREEN_W * 0.03953;
 
   // Dikey metrikler (Container ile bire bir)
-  const V_CARD_W       = SCREEN_W * 0.46511;
-  const V_ROW_SPACING  = safeH   * 0.01931;
-  const TITLE_BOX_H    = 40;
+  const V_CARD_W = SCREEN_W * 0.46511;
+  const V_ROW_SPACING = safeH * 0.01931;
+  const TITLE_BOX_H = 40;
 
   const [isHorizontal, setIsHorizontal] = useState(true);
   const [initialHorizontalOffset, setInitialHorizontalOffset] = useState(0);
@@ -96,7 +93,7 @@ function ProductArea({
     if (isHorizontal) {
       // Yatay -> Dikey
       const x = Math.max(0, horizontalOffsetRef.current - H_PADDING);
-      const idx = Math.round(x / (H_CARD_W + H_SPACING)); // kart indeksi
+      const idx = Math.round(x / (H_IMAGE_W + H_SPACING)); // kart indeksi
       const row = Math.floor(idx / 2);
       const vOffset = rowOffsets[row] ?? 0;
       setInitialVerticalOffset(vOffset);
@@ -105,7 +102,7 @@ function ProductArea({
       const y = Math.max(0, verticalOffsetRef.current);
       const row = findNearestRowByOffset(y);
       const idx = row * 2; // satırın ilk kartı
-      const x = H_PADDING + idx * (H_CARD_W + H_SPACING);
+      const x = H_PADDING + idx * (H_IMAGE_W + H_SPACING);
       setInitialHorizontalOffset(x);
     }
     setIsHorizontal((prev) => !prev);

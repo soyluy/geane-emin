@@ -23,18 +23,21 @@ type RootStackParamList = {
 
 type ProductNavProp = StackNavigationProp<RootStackParamList, 'Product'>;
 
-// ✅ Tek kaynak: Alt Kısım yüksekliği (Dikey) = SCREEN_H * 4.296%
+// ✅ Boyut hesaplamaları - Tek kaynak
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('screen');
+
+// Yatay kart boyutları
+export const H_IMAGE_W = SCREEN_W * 0.27906;  // %27.906
+export const H_IMAGE_H = SCREEN_H * 0.21459;  // %21.459  
+export const H_TITLE_H = 20; // Başlık yüksekliği sabit
+export const H_CARD_H = H_IMAGE_H + H_TITLE_H; // Toplam yükseklik
+
+// Dikey kart boyutları
 export const TITLE_BOX_H = SCREEN_H * 0.04296;
 
 export interface ProductCardProps {
   product: any;             // Ready.ts ya da UIProduct türevleriyle uyum için geniş tip
   isHorizontal: boolean;
-  // Yatay ölçüler (Container dizilim için de bildiriyor; stil tek kaynaktan burada uygulanıyor)
-  H_CARD_W?: number;
-  H_IMAGE_H?: number;
-  H_TITLE_H?: number;
-  H_PRICE_H?: number;
   // Dikey ölçüler (Container yalnızca V_CARD_W verir; geri kalan stil burada)
   V_CARD_W?: number;
 }
@@ -42,10 +45,6 @@ export interface ProductCardProps {
 function ProductCardInner({
   product,
   isHorizontal,
-  H_CARD_W,
-  H_IMAGE_H,
-  H_TITLE_H,
-  H_PRICE_H,
   V_CARD_W,
 }: ProductCardProps) {
   const navigation = useNavigation<ProductNavProp>();
@@ -71,9 +70,14 @@ function ProductCardInner({
   // ₺3.855 formatı (kuruş yok, binlik ayırıcı nokta)
   const formatPrice = (price: number) => '₺' + Math.floor(price).toLocaleString('tr-TR');
 
+  // Başlık kısaltma fonksiyonu (36 karakter maksimum)
+  const truncateTitle = (title: string, maxLength: number = 36) => {
+    if (title.length <= maxLength) return title;
+    return title.substring(0, maxLength) + '...';
+  };
+
   if (isHorizontal) {
-    // — YATAY KART —
-    // Not: borderRadius sadece GÖRSEL KAPSAYICISINA uygulanıyor.
+    // — YATAY KART — (sadece fotoğraf + başlık, kapsayıcı yok)
     return (
       <TouchableOpacity
         activeOpacity={0.8}
@@ -86,61 +90,28 @@ function ProductCardInner({
           })
         }
         style={{
-          width: H_CARD_W,
-          height: (H_IMAGE_H ?? 0) + (H_TITLE_H ?? 0),
-          backgroundColor: '#FFF',
-          position: 'relative',
+          width: H_IMAGE_W,
+          height: H_CARD_H,
         }}
       >
-        {/* Görsel kapsayıcısı */}
-        <View
+        {/* Ürün fotoğrafı - kapsayıcı yok */}
+        <Image
+          source={{ uri: imageUrls[0] }}
           style={{
-            width: H_CARD_W,
+            width: H_IMAGE_W,
             height: H_IMAGE_H,
             borderRadius: 8,
-            overflow: 'hidden',
           }}
-        >
-          <Image
-            source={{ uri: imageUrls[0] }}
-            style={{ width: H_CARD_W!, height: H_IMAGE_H! }}
-            resizeMode="cover"
-          />
-          {/* Fiyat rozeti */}
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 6,
-              right: 10,
-              height: H_PRICE_H,
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              borderRadius: 12,
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingHorizontal: 6,
-            }}
-          >
-            <Text style={styles.priceText}>{formatPrice(product.price)}</Text>
-          </View>
-        </View>
+          resizeMode="cover"
+        />
 
         {/* Başlık */}
-        <View
-          style={{
-            position: 'absolute',
-            top: H_IMAGE_H,
-            left: 0,
-            width: H_CARD_W,
-            height: H_TITLE_H,
-            backgroundColor: '#FFF',
-            paddingTop: 5,
-            justifyContent: 'flex-start',
-          }}
+        <Text 
+          style={[styles.horizontalTitleText]}
+          numberOfLines={1}
         >
-          <Text numberOfLines={1} style={[styles.titleText, { textAlign: 'left' }]}>
-            {product.title}
-          </Text>
-        </View>
+          {truncateTitle(product.title, 36)}
+        </Text>
       </TouchableOpacity>
     );
   }
@@ -201,7 +172,7 @@ function ProductCardInner({
             justifyContent: 'center',
           }}
         >
-          {imgs.map((_, idx) => (
+          {imgs.map((_: any, idx: number) => (
             <View
               key={idx}
               style={{
@@ -296,10 +267,6 @@ function ProductCardInner({
 function areEqual(prev: ProductCardProps, next: ProductCardProps) {
   return (
     prev.isHorizontal === next.isHorizontal &&
-    prev.H_CARD_W === next.H_CARD_W &&
-    prev.H_IMAGE_H === next.H_IMAGE_H &&
-    prev.H_TITLE_H === next.H_TITLE_H &&
-    prev.H_PRICE_H === next.H_PRICE_H &&
     prev.V_CARD_W === next.V_CARD_W &&
     prev.product?.id === next.product?.id &&
     prev.product?.price === next.product?.price &&
@@ -312,6 +279,14 @@ function areEqual(prev: ProductCardProps, next: ProductCardProps) {
 export default React.memo(ProductCardInner, areEqual);
 
 const styles = StyleSheet.create({
+  horizontalTitleText: {
+    fontSize: 11,
+    fontWeight: '500', // Medium
+    fontFamily: 'Inter',
+    color: '#303336',
+    marginTop: 8,
+    textAlign: 'left',
+  },
   titleText: {
     fontSize: 10,
     fontWeight: '600',

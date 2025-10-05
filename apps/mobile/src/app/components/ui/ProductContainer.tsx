@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { View, FlatList, Dimensions, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Product } from '../../data/fakeData';
-import ProductCard, { TITLE_BOX_H } from './ProductCard'; // ✅ Tek kaynaktan import
+import ProductCard, { TITLE_BOX_H, H_IMAGE_W, H_IMAGE_H, H_CARD_H } from './ProductCard'; // ✅ Tek kaynaktan import
 
 export interface ProductContainerProps {
   isHorizontal: boolean;
@@ -30,14 +30,9 @@ export default function ProductContainer({
   const hRef = useRef<FlatList>(null);
   const vRef = useRef<FlatList>(null);
 
-  // — YATAY — (dizilim/virtualization için gerekenler)
-  const H_CARD_W = SCREEN_W * 0.27906;
-  const H_IMAGE_H = safeH * 0.215;
-  const H_TITLE_H = safeH * 0.041;
-  const H_CARD_H = H_IMAGE_H + H_TITLE_H;
+  // — YATAY — (ProductCard'dan import edilen sabitler)
   const H_SPACING = SCREEN_W * 0.02325;
   const H_PADDING = SCREEN_W * 0.03953;
-  const H_PRICE_H = H_IMAGE_H * 0.1;
 
   // — DİKEY — (dizilim için gerekenler)
   const V_CARD_W = SCREEN_W * 0.46511;
@@ -57,7 +52,7 @@ export default function ProductContainer({
     ({ item, index }: { item: Product; index: number }) => (
       <View
         style={{
-          width: H_CARD_W,
+          width: H_IMAGE_W,
           height: H_CARD_H,
           marginRight: index === items.length - 1 ? 0 : H_SPACING,
         }}
@@ -65,25 +60,21 @@ export default function ProductContainer({
         <ProductCard
           product={item}
           isHorizontal
-          H_CARD_W={H_CARD_W}
-          H_IMAGE_H={H_IMAGE_H}
-          H_TITLE_H={H_TITLE_H}
-          H_PRICE_H={H_PRICE_H}
         />
       </View>
     ),
-    [H_CARD_W, H_CARD_H, H_IMAGE_H, H_TITLE_H, H_PRICE_H, H_SPACING, items.length]
+    [H_SPACING, items.length]
   );
 
   const getHorizontalItemLayout = useCallback(
     (_: any, index: number) => ({
-      length: H_CARD_W + (index === items.length - 1 ? 0 : H_SPACING),
+      length: H_IMAGE_W + (index === items.length - 1 ? 0 : H_SPACING),
       offset:
         H_PADDING +
-        (index === 0 ? 0 : H_CARD_W * index + H_SPACING * Math.max(0, Math.min(index, items.length - 2))),
+        (index === 0 ? 0 : H_IMAGE_W * index + H_SPACING * Math.max(0, Math.min(index, items.length - 2))),
       index,
     }),
-    [H_CARD_W, H_SPACING, H_PADDING, items.length]
+    [H_SPACING, H_PADDING, items.length]
   );
 
   if (isHorizontal) {
