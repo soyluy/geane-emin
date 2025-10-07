@@ -20,11 +20,10 @@ import { ScrollView, TouchableOpacity } from 'react-native';
 import RightModal from '../Modals/RightModal';
 
 // Icons for different panels
-import FilterIcon from '../../../../../assets/icons/nav/filter.svg';
-import SearchIcon from '../../../../../assets/icons/nav/search.svg';
+import FilterIcon from '../../../../../assets/icons/GravityUIIconsby/gravity-ui--bars-ascending-align-left-arrow-up.svg';
+import SearchIcon from '../../../../../assets/icons/GravityUIIconsby/gravity-ui--magnifier.svg';
 import NotificationIcon from '../../../../../assets/icons/nav/notification-active.svg';
 import BookmarkIcon from '../../../../../assets/icons/nav/bookmark.svg';
-import KebabMenuIcon from '../../../../../assets/icons/nav/Kebab-menu.svg';
 
 const { width: SCREEN_W } = Dimensions.get('screen');
 
@@ -68,9 +67,8 @@ const PANEL_REGISTRY: Record<string, {
     icons: [
       { icon: FilterIcon, onPress: () => console.log('Filter orders'), accessibilityLabel: 'Filtrele' },
       { icon: SearchIcon, onPress: () => console.log('Search orders'), accessibilityLabel: 'Ara' },
-      { icon: KebabMenuIcon, onPress: () => console.log('More options'), accessibilityLabel: 'Daha Fazla Seçenek' },
     ],
-    iconsTopOffset: 0.25 // %25 aşağısı
+    iconsTopOffset: 0.19206 // %25 aşağısı
   },
   customerSupport: { 
     title: 'Müşteri Hizmetleri',   

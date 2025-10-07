@@ -86,9 +86,9 @@
     "/libs/shared-persistence"
   ],
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.2",
     "@expo/metro-config": "~0.19.4",
     "@expo/metro-runtime": "~4.0.0",
-    "@expo-google-fonts/inter": "^0.4.2",
     "@nestjs/common": "^10.0.2",
     "@nestjs/core": "^10.0.2",
     "@nestjs/platform-express": "^10.0.2",

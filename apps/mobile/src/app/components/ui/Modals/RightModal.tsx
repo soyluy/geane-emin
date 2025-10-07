@@ -12,22 +12,26 @@ import {
   Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import BackButtonIcon from '../../../../../assets/icons/backbutton.svg';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('screen');
 
-const MODAL_W = SCREEN_W * 0.75; // %75 genişlik
+const MODAL_W = SCREEN_W * 0.90; // %90 genişlik
 const MODAL_H = SCREEN_H;        // modal yüksekliği (tam ekran)
-const HEADER_Y = Math.round(MODAL_H * 0.0965); // %9.65 aşağısı - Başlık konumu
-const FILTER_Y = Math.round(MODAL_H * 0.343347); // %41.184 aşağısı - İkonlar konumu
-const FILTER_X = Math.round(MODAL_W * 0.585); // %58.5 sağa - biraz daha sola kaydırıldı
+const HEADER_Y = Math.round(MODAL_H * 0.07518); // %9.65 aşağısı - Başlık konumu
+// İkonlar pozisyonu - sağ kenardan hesaplama
+const ICONS_Y = Math.round(MODAL_H * 0.19206); // %19.206 aşağısı
+const ICONS_RIGHT_MARGIN = Math.round(MODAL_W * 0.05813); // Sağ kenardan %5.813 sol
+
+// Back button pozisyonu
+const BACK_BUTTON_Y = Math.round(MODAL_H * 0.06652); // %6.652 aşağısı
+const BACK_BUTTON_X = Math.round(MODAL_W * 0.05813); // %5.813 sağa
 
 // RightModal özel header alanı - İkonların altından içerik başlasın
-const HEADER_AREA_HEIGHT = FILTER_Y + 44 + 20; // İkon Y + İkon yükseklik + margin
+const HEADER_AREA_HEIGHT = ICONS_Y + 44 + 20; // İkon Y + İkon yükseklik + margin
 
 // İkonlar arası mesafe
-const ICON_SPACING = 40;
-const SEARCH_X = FILTER_X + ICON_SPACING; // Filter'ın sağında
-const MENU_X = SEARCH_X + ICON_SPACING;   // Search'ün sağında
+const ICON_SPACING = 50;
 
 // Android stilinde hızlı animasyonlar
 const OPEN_DUR = 250;  // Android: 250ms açılış
@@ -64,10 +68,10 @@ export default function RightModal({
   const insets = useSafeAreaInsets();
 
   // İkon Y pozisyonunu belirleme - custom offset veya varsayılan
-  const ICONS_Y = iconsTopOffset ? Math.round(MODAL_H * iconsTopOffset) : FILTER_Y;
+  const FINAL_ICONS_Y = iconsTopOffset ? Math.round(MODAL_H * iconsTopOffset) : ICONS_Y;
   
   // Header area yüksekliği - ikonlar varsa hesapla
-  const HEADER_AREA_HEIGHT = icons.length > 0 ? ICONS_Y + 44 + 20 : HEADER_Y + 60;
+  const HEADER_AREA_HEIGHT = icons.length > 0 ? FINAL_ICONS_Y + 44 + 20 : HEADER_Y + 60;
 
   const modalX = useRef(new Animated.Value(MODAL_W)).current;
   const backdrop = useRef(new Animated.Value(0)).current;
@@ -110,12 +114,12 @@ export default function RightModal({
 
   const pan = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponderCapture: () => true,
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponderCapture: (_e, gs) => Math.abs(gs.dx) > 2,
-      onMoveShouldSetPanResponder: (_e, gs) => Math.abs(gs.dx) > 2,
+      onStartShouldSetPanResponderCapture: () => false, // TouchableOpacity'lerin çalışmasını sağla
+      onStartShouldSetPanResponder: () => false, // TouchableOpacity'lerin çalışmasını sağla
+      onMoveShouldSetPanResponderCapture: (_e, gs) => Math.abs(gs.dx) > 5, // Sadece belirgin kaydırmada aktif ol
+      onMoveShouldSetPanResponder: (_e, gs) => Math.abs(gs.dx) > 5, // Sadece belirgin kaydırmada aktif ol
       onPanResponderTerminationRequest: () => false,
-      onShouldBlockNativeResponder: () => true,
+      onShouldBlockNativeResponder: () => false, // Native responser'ları bloke etme
       onPanResponderMove: (_e, gs) => {
         const dx = Math.max(gs.dx, 0);
         const next = Math.min(dx, MODAL_W);
@@ -179,6 +183,20 @@ export default function RightModal({
         {/* RightModal Özel Header Alanı */}
         <View style={[styles.headerArea, { height: HEADER_AREA_HEIGHT }]} />
 
+        {/* Back Button */}
+        <TouchableOpacity 
+          style={[styles.backButton, { top: BACK_BUTTON_Y, left: BACK_BUTTON_X }]}
+          onPress={() => closeModal()}
+          accessibilityLabel="Geri"
+        >
+          <BackButtonIcon 
+            width={42} 
+            height={42} 
+            fill="#303336"
+            stroke="none"
+          />
+        </TouchableOpacity>
+
         {/* Modal Başlığı: modal yüksekliğinin %9.65 aşağısı */}
         <View style={[styles.header, { top: HEADER_Y }]}>
           <Text numberOfLines={1} style={styles.headerTitle}>
@@ -189,12 +207,14 @@ export default function RightModal({
         {/* Dinamik İkonlar - Opsiyonel */}
         {icons.map((iconConfig, index) => {
           const IconComponent = iconConfig.icon;
-          const iconX = FILTER_X + (index * ICON_SPACING);
+          // Sağ kenardan konumlandırma: sıra korunarak, ters index kullanarak sağdan sola
+          const reverseIndex = icons.length - 1 - index;
+          const iconRight = ICONS_RIGHT_MARGIN + (reverseIndex * ICON_SPACING);
           
           return (
             <TouchableOpacity 
               key={`icon-${index}`}
-              style={[styles.actionIcon, { top: ICONS_Y, left: iconX }]}
+              style={[styles.actionIcon, { top: FINAL_ICONS_Y, right: iconRight }]}
               onPress={iconConfig.onPress}
               accessibilityLabel={iconConfig.accessibilityLabel}
             >
@@ -227,7 +247,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     width: MODAL_W,
-    backgroundColor: 'rgba(255, 255, 255, 0.96)',
+    backgroundColor: 'rgba(255, 255, 255, 0.99)',
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
     overflow: 'hidden',
@@ -257,11 +277,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 20,
     color: '#303336',
     fontFamily: 'Inter-SemiBold',
-    fontWeight: '600',
+    fontWeight: '500',
     textAlign: 'center',
+  },
+  // Back Button
+  backButton: {
+    position: 'absolute',
+    zIndex: 1000,
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   // Dinamik Action Icon
   actionIcon: {

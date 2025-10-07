@@ -88,11 +88,12 @@ export default function MainScreen() {
             paddingBottom: EXTRA_SCROLL_HEIGHT + 100 // ✅ Navigation bar için ek boşluk
           }}
           scrollEventThrottle={16}
+          bounces={false}
+          alwaysBounceVertical={false}
+          removeClippedSubviews={true}
           onScroll={onScroll}
         >
-          <View style={{ height: LIKED_SECTION_HEIGHT }}>
-            <LikedSectionContainer />
-          </View>
+          <LikedSectionContainer />
 
           <View style={{ height: FILTERBAR_HEIGHT }}>
             <FilterBar

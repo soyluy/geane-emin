@@ -91,7 +91,7 @@ export default function TopBox({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: 'transparent', // ✅ ŞEFFAF YAPILDI
+    backgroundColor: '#ffffff', // ✅ ŞEFFAF YAPILDI
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(0,0,0,0.2)',
     flexDirection: 'row',
