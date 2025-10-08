@@ -9,8 +9,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // ALT PANELLER
 import CardPanel from '../CardPanel';
 import MyOrdersPanel from './MyOrdersPanel';
+import MyMessages from './MyMessages';
 import CustomerSupportPanel from '../CustomerSupportPanel';
-import InboxPanel from '../InboxPanel';
 import AddressPanel from '../AddressPanel';
 import PrivacyPanel from '../PrivacyPanel';
 import HelpPanel from '../HelpPanel';
@@ -22,6 +22,7 @@ import RightModal from '../Modals/RightModal';
 // Icons for different panels
 import FilterIcon from '../../../../../assets/icons/GravityUIIconsby/gravity-ui--bars-ascending-align-left-arrow-up.svg';
 import SearchIcon from '../../../../../assets/icons/GravityUIIconsby/gravity-ui--magnifier.svg';
+import CommentPlusIcon from '../../../../../assets/icons/GravityUIIconsby/gravity-ui--comment-plus.svg';
 import NotificationIcon from '../../../../../assets/icons/nav/notification-active.svg';
 import BookmarkIcon from '../../../../../assets/icons/nav/bookmark.svg';
 
@@ -80,8 +81,12 @@ const PANEL_REGISTRY: Record<string, {
   },
   inbox:           { 
     title: 'Gelen Kutusu',         
-    Render: ({onClose}) => <InboxPanel onClose={onClose} messages={[{ id:'1', title:'Yeni Mesaj', content:'Gelen kutun güncellendi.', date:'09.08.2025' }]} />,
-    // İkon yok
+    Render: ({onClose}) => <MyMessages onClose={onClose} />,
+    icons: [
+      { icon: CommentPlusIcon, onPress: () => console.log('Yeni Mesaj'), accessibilityLabel: 'Yeni Mesaj' },
+      { icon: SearchIcon, onPress: () => console.log('Mesaj Ara'), accessibilityLabel: 'Mesaj Ara' },
+    ],
+    iconsTopOffset: 0.19206 // Siparişlerim paneli ile aynı pozisyon
   },
   editAddresses:   { 
     title: 'Adreslerini Düzenle',  
