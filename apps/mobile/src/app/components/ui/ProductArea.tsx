@@ -1,11 +1,11 @@
 // ProductArea.tsx
 
-import React, { useState, useRef, useMemo } from 'react';
-import { View, StyleSheet, Modal, Dimensions } from 'react-native';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
+import { View, StyleSheet, Modal, Dimensions, FlatList } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FieldHeader from './FieldHeader';
-import ProductContainer from './ProductContainer';
-// ✅ Artık ProductCard'dan import gerekmiyor - sadece toggle hesaplaması için sabit değer
+import ProductCard, { TITLE_BOX_H } from './ProductCard';
+// ✅ ProductContainer kaldırıldı - FlatList logic'i direkt burada
 
 interface ProductAreaProps {
   title: string;
@@ -28,16 +28,17 @@ function ProductArea({
   const H_PADDING = SCREEN_W * 0.03953;
   const H_IMAGE_W = SCREEN_W * 0.27906; // Toggle hesaplaması için local sabit
 
-  // Dikey metrikler (Container ile bire bir)
+  // Dikey metrikler
   const V_CARD_W = SCREEN_W * 0.46511;
   const V_ROW_SPACING = safeH * 0.01931;
-  const TITLE_BOX_H = 40;
 
   const [isHorizontal, setIsHorizontal] = useState(true);
   const [initialHorizontalOffset, setInitialHorizontalOffset] = useState(0);
   const [initialVerticalOffset, setInitialVerticalOffset] = useState(0);
   const horizontalOffsetRef = useRef(0);
   const verticalOffsetRef = useRef(0);
+  const hRef = useRef<FlatList>(null);
+  const vRef = useRef<FlatList>(null);
 
   // Dikey satır yükseklikleri ve ofsetleri (Container ile aynı formül)
   const getAr = (p: any) => {
@@ -110,6 +111,62 @@ function ProductArea({
     onIconPress?.();
   };
 
+  // Render functions
+  const renderHorizontalItem = useCallback(
+    ({ item, index }: { item: any; index: number }) => (
+      <View
+        style={{
+          marginRight: index === items.length - 1 ? 0 : H_SPACING,
+        }}
+      >
+        <ProductCard product={item} isHorizontal />
+      </View>
+    ),
+    [H_SPACING, items.length]
+  );
+
+  const renderVerticalItem = useCallback(
+    ({ item: [prod1, prod2] }: { item: [any, any?] }) => (
+      <View style={{ 
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        marginTop: V_ROW_SPACING 
+      }}>
+        {prod1 ? (
+          <ProductCard product={prod1} isHorizontal={false} V_CARD_W={V_CARD_W} />
+        ) : (
+          <View style={{ width: V_CARD_W }} />
+        )}
+
+        {prod2 ? (
+          <ProductCard product={prod2} isHorizontal={false} V_CARD_W={V_CARD_W} />
+        ) : (
+          <View style={{ width: V_CARD_W }} />
+        )}
+      </View>
+    ),
+    [V_CARD_W, V_ROW_SPACING]
+  );
+
+  const getVerticalItemLayout = useCallback(
+    (_: any, index: number) => ({
+      length: rowHeights[index] + V_ROW_SPACING,
+      offset: rowOffsets[index],
+      index,
+    }),
+    [rowHeights, rowOffsets, V_ROW_SPACING]
+  );
+
+  // Initialize scroll positions
+  React.useEffect(() => {
+    if (isHorizontal && hRef.current) {
+      hRef.current.scrollToOffset({ offset: initialHorizontalOffset, animated: false });
+    }
+    if (!isHorizontal && vRef.current) {
+      vRef.current.scrollToOffset({ offset: initialVerticalOffset, animated: false });
+    }
+  }, [isHorizontal, initialHorizontalOffset, initialVerticalOffset]);
+
   return (
     <>
       <View style={styles.headerWrapper}>
@@ -122,12 +179,22 @@ function ProductArea({
       </View>
 
       {isHorizontal ? (
-        /* ✅ Esnek container - sabit yükseklik yok */
-        <ProductContainer
-          items={items}
-          isHorizontal
-          initialHorizontalOffset={initialHorizontalOffset}
-          onHorizontalScroll={(offsetX) => (horizontalOffsetRef.current = offsetX)}
+        // HORIZONTAL MODE
+        <FlatList
+          ref={hRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={items}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ 
+            paddingHorizontal: H_PADDING, 
+            alignItems: 'flex-start' 
+          }}
+          onScroll={(e) => (horizontalOffsetRef.current = e.nativeEvent.contentOffset.x)}
+          scrollEventThrottle={16}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          renderItem={renderHorizontalItem}
         />
       ) : (
         <Modal visible animationType="slide" onRequestClose={toggleMode}>
@@ -138,11 +205,18 @@ function ProductArea({
               onIconPress={toggleMode}
               rotated={!isHorizontal}
             />
-            <ProductContainer
-              items={items}
-              isHorizontal={false}
-              initialVerticalOffset={initialVerticalOffset}
-              onVerticalScroll={(offsetY) => (verticalOffsetRef.current = offsetY)}
+            <FlatList
+              ref={vRef}
+              data={pairData}
+              keyExtractor={(pair) => pair[0].id}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: SCREEN_W * 0.02093 }}
+              onScroll={(e) => (verticalOffsetRef.current = e.nativeEvent.contentOffset.y)}
+              scrollEventThrottle={16}
+              initialNumToRender={6}
+              maxToRenderPerBatch={6}
+              renderItem={renderVerticalItem}
+              getItemLayout={getVerticalItemLayout}
             />
           </View>
         </Modal>
